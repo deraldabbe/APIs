@@ -1,27 +1,28 @@
-const getResidentsButton = document.querySelector(`#get-residents-button`)
-const axios = require('axios')
-function handleClick() {
-    axios
-    .get(`http://swapi.dev/api/planets/2/`)
-    .then((response) => {
-        const residents = response.data.residents
+const residentsBtn = document.querySelector(`#getResidents`)
+const mainContainer =document.querySelector(`main`)
+const residentsContainer = document.querySelector(`#residentsContainer`)
+
+const btnEvent = (evt) => {
+    axios.get(`https://swapi.dev/api/planets?search=Alderaan`)
+    .then(response => {
+        let planet = response.data.results
+        let people = planet[0].residents
+
+        residentsContainer.innerHTML = ``
+
+        for(let i = 0; i < people.length; i++) {
+            axios.get(people[i])
+                .then(response => {
+
+                    let header = document.createElement(`h2`)
+                    header.textContent = response.data.name
+                    residentsContainer.appendChild(header)
+                })
+                .catch(err => console.log(err))
+        }
+
     })
-    .catch((error) => {
-        console.log(`Error`, error)
-    })
-    console.log("Button clicked")
+    .catch(err => console.log(err))
 }
-residents.forEach((residentURL) => {
-    axios
-    .get(residentURL)
-    .then((response) => {
-        const residentName = response.data.name
-    })
-    .catch((error) => {
-console.error(`Error`, error)
-    })
-})
-const h2 = document.createElement(`h2`)
-h2.textContent = residentName
-document.body.appendChild(h2)
-getResidentsButton.addEventListener("click", handleClick)
+
+residentsBtn.addEventListener(`click`, btnEvent)
